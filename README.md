@@ -87,7 +87,7 @@ For more information, visit [kwtsms.com](https://www.kwtsms.com) or contact [sup
 
 ### From GitHub
 
-1. Download the latest release from [GitHub Releases](https://github.com/boxlinknet/kwtsms-opencart/releases)
+1. Download the latest release from [GitHub Releases](https://github.com/kwtsms/kwtsms-opencart/releases)
 2. Extract the zip, the `extension/kwtsms/` directory contains the extension files
 3. Copy the `kwtsms/` folder to your OpenCart installation's `extension/` directory
 4. In your OpenCart Admin, go to **Extensions > Extensions**, select **Modules**
