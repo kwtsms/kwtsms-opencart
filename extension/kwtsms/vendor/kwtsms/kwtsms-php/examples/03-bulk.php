@@ -1,4 +1,5 @@
 <?php
+// 2026-11-05 11:05 +03: sample phone numbers replaced with the placeholder 965XXXXXXXX (sample numbers belong to real people), mirrors upstream kwtsms-php 20c1612, int-testnumber.
 
 /**
  * Example 03: Bulk SMS
@@ -25,10 +26,10 @@ $sms = KwtSMS::from_env();
 // ── Example 1: Small bulk (≤200 numbers, single API call) ───────────────────
 
 $recipients = [
-    '96598765432',
+    '965XXXXXXXX',
     '96512345678',
-    '+965 9000 0001',  // Normalized automatically
-    '00965 9000 0002', // Normalized automatically
+    '+965 XXXX XXXX',  // Normalized automatically
+    '00965 XXXX XXXX', // Normalized automatically
 ];
 
 echo "Sending to " . count($recipients) . " recipients...\n\n";
@@ -84,7 +85,7 @@ if (!empty($bulk['errors'])) {
 echo "\n" . str_repeat('─', 60) . "\n\n";
 
 $mixed = [
-    '96598765432',      // ✅ Valid Kuwait number
+    '965XXXXXXXX',      // ✅ Valid Kuwait number
     'admin@test.com',   // ❌ Email address (rejected locally)
     '+1 800 555 0199',  // ✅ Valid US number
     '123',              // ❌ Too short (rejected locally)

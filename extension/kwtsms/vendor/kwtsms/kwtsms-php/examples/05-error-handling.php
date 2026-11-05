@@ -1,4 +1,5 @@
 <?php
+// 2026-11-05 11:05 +03: sample phone numbers replaced with the placeholder 965XXXXXXXX (sample numbers belong to real people), mirrors upstream kwtsms-php 20c1612, int-testnumber.
 
 /**
  * Example 05: Error Handling
@@ -118,7 +119,7 @@ echo "═══ SEND ERROR HANDLING ═══\n\n";
 
 // Valid number — should succeed
 echo "Test 1: Valid number\n";
-send_safe($sms, '96598765432', 'Error handling test 1');
+send_safe($sms, '965XXXXXXXX', 'Error handling test 1');
 
 echo "\nTest 2: Invalid number\n";
 send_safe($sms, 'not-a-phone', 'Error handling test 2');

@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- Admin phone placeholders and help text (English and Arabic) and the bundled kwtsms-php library's docs, examples and ERR006/ERR025 action text use the placeholder `965XXXXXXXX` instead of a sample mobile number; the bundled library's tests read the phone number from `KWTSMS_TEST_NUMBER` and skip the tests that need it when it is unset.
+
 ## [1.1.0] - 2026-04-09
 
 ### Added

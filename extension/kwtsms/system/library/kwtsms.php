@@ -432,8 +432,10 @@ class Kwtsms {
 
         // If no country code found, or the detected country is not in our coverage,
         // treat it as a local number and prepend the default country code.
-        // This handles cases like "98765432" (Kuwait local) which would otherwise
+        // This handles cases like "98XXXXXX" (Kuwait local) which would otherwise
         // be misidentified as Iran (country code 98).
+        // 2026-11-05 10:13 +03: sample number in the comment above replaced with a placeholder
+        // (sample numbers belong to real people), int-testnumber.
         if ($countryCode === null || !in_array($countryCode, $coveredPrefixes)) {
             $defaultCode = $this->config->get('module_kwtsms_country_code');
             if (empty($defaultCode)) {

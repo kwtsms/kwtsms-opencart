@@ -43,7 +43,8 @@ $_['entry_admin_paid_statuses']     = 'Admin Paid Order Statuses';
 $_['entry_admin_problem_statuses']  = 'Admin Problem Statuses';
 $_['help_status']                   = 'Enable or disable all SMS sending globally.';
 $_['help_test_mode']                = 'When enabled, SMS messages are sent with test=1 (no delivery to handsets, credits recoverable).';
-$_['help_admin_phones']             = 'Comma-separated phone numbers to receive admin SMS alerts (e.g. 96598765432,96512345678).';
+// 2026-11-05 10:13 +03: example numbers replaced with the placeholder 965XXXXXXXX (sample numbers belong to real people), int-testnumber.
+$_['help_admin_phones']             = 'Comma-separated phone numbers to receive admin SMS alerts (e.g. 965XXXXXXXX,965XXXXXXXX).';
 $_['help_customer_statuses']        = 'Order statuses that trigger an SMS to the customer.';
 $_['help_admin_paid_statuses']      = 'Order statuses that trigger a "new paid order" SMS to admin.';
 $_['help_admin_problem_statuses']   = 'Order statuses that trigger a "problem order" SMS to admin.';

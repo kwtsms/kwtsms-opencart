@@ -194,10 +194,11 @@
               </div>
 
               {# Admin Phone Numbers #}
+              {# 2026-11-05 10:13 +03: phone placeholders in this file (admin phones, test phone, campaign numbers) use 965XXXXXXXX instead of sample numbers (they belong to real people), int-testnumber. #}
               <div class="row mb-3">
                 <label class="col-sm-3 col-form-label" for="input-admin-phones">{{ entry_admin_phones }}</label>
                 <div class="col-sm-9">
-                  <input type="text" name="module_kwtsms_admin_phones" value="{{ module_kwtsms_admin_phones }}" id="input-admin-phones" class="form-control" placeholder="96598765432,96512345678">
+                  <input type="text" name="module_kwtsms_admin_phones" value="{{ module_kwtsms_admin_phones }}" id="input-admin-phones" class="form-control" placeholder="965XXXXXXXX,965XXXXXXXX">
                   <small class="form-text text-muted">{{ help_admin_phones }}</small>
                 </div>
               </div>
@@ -537,7 +538,7 @@
               <div class="card-body">
                 <div class="mb-3">
                   <label for="input-test-phone" class="form-label">{{ entry_test_phone }}</label>
-                  <input type="text" class="form-control" id="input-test-phone" placeholder="96598765432,96512345678">
+                  <input type="text" class="form-control" id="input-test-phone" placeholder="965XXXXXXXX,965XXXXXXXX">
                   <small class="form-text text-muted">Comma-separated for multiple numbers.</small>
                 </div>
                 <div class="mb-3">
@@ -744,7 +745,7 @@
                   <label class="form-check-label" for="audience-custom">{{ text_custom_numbers }}</label>
                 </div>
                 <div id="campaign-custom-numbers" style="display:none;" class="ms-4 mb-2">
-                  <textarea id="campaign-numbers" class="form-control" rows="3" placeholder="96598765432,96512345678"></textarea>
+                  <textarea id="campaign-numbers" class="form-control" rows="3" placeholder="965XXXXXXXX,965XXXXXXXX"></textarea>
                 </div>
               </div>
             </div>

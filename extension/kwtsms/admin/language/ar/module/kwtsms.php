@@ -43,7 +43,8 @@ $_['entry_admin_paid_statuses']     = 'حالات الطلب المدفوع لل
 $_['entry_admin_problem_statuses']  = 'حالات المشاكل للمسؤول';
 $_['help_status']                   = 'تفعيل أو تعطيل إرسال الرسائل القصيرة بشكل عام.';
 $_['help_test_mode']                = 'عند التفعيل، يتم إرسال الرسائل بوضع الاختبار (لا توصيل للهواتف، الرصيد قابل للاسترداد).';
-$_['help_admin_phones']             = 'أرقام الهواتف مفصولة بفواصل لاستقبال تنبيهات المسؤول (مثال: 96598765432,96512345678).';
+// 2026-11-05 10:13 +03: example numbers replaced with the placeholder 965XXXXXXXX (sample numbers belong to real people), int-testnumber.
+$_['help_admin_phones']             = 'أرقام الهواتف مفصولة بفواصل لاستقبال تنبيهات المسؤول (مثال: 965XXXXXXXX,965XXXXXXXX).';
 $_['help_customer_statuses']        = 'حالات الطلب التي ترسل رسالة قصيرة للعميل.';
 $_['help_admin_paid_statuses']      = 'حالات الطلب التي ترسل رسالة "طلب مدفوع جديد" للمسؤول.';
 $_['help_admin_problem_statuses']   = 'حالات الطلب التي ترسل رسالة "مشكلة في الطلب" للمسؤول.';
