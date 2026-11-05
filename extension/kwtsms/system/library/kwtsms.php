@@ -19,11 +19,26 @@ class Kwtsms {
     }
 
     /**
+     * Product token sent as the kwtsms-php app_name (User-Agent): "kwtsms-opencart/<install.json version>".
+     * 2026-11-05 14:49 +03: added so kwtSMS can count accounts per integration (name and version only, no personal data), #939.
+     */
+    public static function appName(): string {
+        static $token = null;
+        if ($token === null) {
+            $json = @file_get_contents(DIR_EXTENSION . 'kwtsms/install.json');
+            $data = is_string($json) ? json_decode($json, true) : null;
+            $version = is_array($data) && !empty($data['version']) ? (string)$data['version'] : '0.0.0';
+            $token = 'kwtsms-opencart/' . $version;
+        }
+        return $token;
+    }
+
+    /**
      * Authenticate with the kwtSMS gateway, store balance/senderids/coverage.
      */
     public function login(string $username, string $password): array {
         try {
-            $client = new KwtSMSClient($username, $password, 'KWT-SMS', false, '');
+            $client = new KwtSMSClient($username, $password, 'KWT-SMS', false, '', self::appName()); // 2026-11-05 14:49 +03: app token for the User-Agent, #939
 
             $balanceResult = $client->balance();
             if ($balanceResult === null) {
@@ -77,7 +92,7 @@ class Kwtsms {
         }
 
         try {
-            $client = new KwtSMSClient($username, $password, 'KWT-SMS', false, '');
+            $client = new KwtSMSClient($username, $password, 'KWT-SMS', false, '', self::appName()); // 2026-11-05 14:49 +03: app token for the User-Agent, #939
 
             $balanceResult = $client->balance();
             if ($balanceResult === null) {
@@ -256,7 +271,7 @@ class Kwtsms {
 
         // 11. Single API call
         try {
-            $client = new KwtSMSClient($username, $password, $senderId, $testMode, '');
+            $client = new KwtSMSClient($username, $password, $senderId, $testMode, '', self::appName()); // 2026-11-05 14:49 +03: app token for the User-Agent, #939
             $result = $client->send(implode(',', $normalized), $cleanedMessage);
 
             $this->debugLog('debug', 'send', 'API response', ['result' => $result]);
@@ -377,7 +392,7 @@ class Kwtsms {
 
         try {
             // Force test mode to true
-            $client = new KwtSMSClient($username, $password, $senderId, true, '');
+            $client = new KwtSMSClient($username, $password, $senderId, true, '', self::appName()); // 2026-11-05 14:49 +03: app token for the User-Agent, #939
             $result = $client->send($norm, $cleanedMessage);
 
             $this->debugLog('debug', 'test_gateway', 'Test SMS API response', ['result' => $result]);
@@ -530,7 +545,7 @@ class Kwtsms {
 
             while ($attempt <= $maxRetries) {
                 try {
-                    $client = new KwtSMSClient($username, $password, $senderId, $testMode, '');
+                    $client = new KwtSMSClient($username, $password, $senderId, $testMode, '', self::appName()); // 2026-11-05 14:49 +03: app token for the User-Agent, #939
                     $result = $client->send(implode(',', $batch), $message);
 
                     // Check for ERR013 (queue full) and retry with backoff
