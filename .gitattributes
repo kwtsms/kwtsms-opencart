@@ -1,0 +1,12 @@
+# 2026-11-06 01:07 +03: keep the committed kwtsms-php vendor copy's CI, dev config, examples and contributor docs out of
+# git archive builds of the extension; LICENSE, README, composer.json and src still ship, ci-dryrun-all
+/extension/kwtsms/vendor/kwtsms/kwtsms-php/.github export-ignore
+/extension/kwtsms/vendor/kwtsms/kwtsms-php/.gitignore export-ignore
+/extension/kwtsms/vendor/kwtsms/kwtsms-php/phpunit.xml export-ignore
+/extension/kwtsms/vendor/kwtsms/kwtsms-php/.php-cs-fixer.dist.php export-ignore
+/extension/kwtsms/vendor/kwtsms/kwtsms-php/examples export-ignore
+/extension/kwtsms/vendor/kwtsms/kwtsms-php/CONTRIBUTING.md export-ignore
+/extension/kwtsms/vendor/kwtsms/kwtsms-php/SECURITY.md export-ignore
+/extension/kwtsms/vendor/kwtsms/kwtsms-php/CHANGELOG.md export-ignore
+/.gitignore export-ignore
+/.gitattributes export-ignore
