@@ -1,19 +1,20 @@
-# kwtSMS - SMS Gateway for OpenCart 4.x
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/readme-header-dark.png">
+  <img alt="kwtSMS: SMS gateway for Kuwait" src=".github/assets/readme-header-light.png">
+</picture>
 
-[![OpenCart](https://img.shields.io/badge/OpenCart-4.x-blue?logo=opencart)](https://www.opencart.com)
+# kwtSMS for OpenCart
+
+[![OpenCart](https://img.shields.io/badge/OpenCart-4.x-blue?logo=opencart)](https://www.opencart.com/index.php?route=marketplace/extension&filter_search=kwtsms)
 [![PHP](https://img.shields.io/badge/PHP-8.0%2B-777BB4?logo=php&logoColor=white)](https://php.net)
-[![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
-[![kwtSMS](https://img.shields.io/badge/Gateway-kwtSMS-FFA200)](https://www.kwtsms.com)
-[![Arabic](https://img.shields.io/badge/Language-EN%20%7C%20AR-orange)](https://www.kwtsms.com)
-[![Free](https://img.shields.io/badge/Price-Free-brightgreen)]()
+[![Release](https://img.shields.io/github/v/release/kwtsms/kwtsms-opencart)](https://github.com/kwtsms/kwtsms-opencart/releases)
+[![License](https://img.shields.io/badge/License-GPL--3.0-green)](https://www.gnu.org/licenses/gpl-3.0.html)
 
-Free OpenCart 4.x extension that integrates the [kwtSMS](https://www.kwtsms.com) SMS gateway for order notifications, OTP verification, abandoned cart recovery, and admin alerts.
+Send order updates, checkout OTP codes, abandoned cart reminders and SMS campaigns from your OpenCart store, through
+kwtSMS, the Kuwaiti SMS gateway. Free.
 
-## About kwtSMS
-
-[kwtSMS](https://www.kwtsms.com) is a Kuwait-based SMS gateway operating since 2007, serving 1,000+ networks across 220+ countries. It is the SMS provider of choice for businesses in Kuwait and the GCC region, offering direct carrier relationships, flat-rate credits that never expire, and private Sender ID registration for Kuwait telecoms (Zain, Ooredoo, STC).
-
-For more information, visit [kwtsms.com](https://www.kwtsms.com) or contact [support](https://www.kwtsms.com/support.html).
+kwtSMS delivers to Zain, Ooredoo, stc and Virgin in Kuwait and to more than 200 countries, with your own Sender ID,
+free API testing and credits that do not expire.
 
 ## Features
 
@@ -69,10 +70,8 @@ For more information, visit [kwtsms.com](https://www.kwtsms.com) or contact [sup
 
 ## Requirements
 
-- OpenCart 4.0.2.x or later
-- PHP 8.0 or later
-- ext-curl, ext-json
-- A kwtSMS account ([register here](https://www.kwtsms.com))
+- OpenCart 4.0.2.x or later, PHP 8.0 or later with curl and json.
+- A kwtSMS account (free test account, no papers): https://www.kwtsms.com/cportal/signup/
 
 ## Installation
 
@@ -93,12 +92,16 @@ For more information, visit [kwtsms.com](https://www.kwtsms.com) or contact [sup
 4. In your OpenCart Admin, go to **Extensions > Extensions**, select **Modules**
 5. Find **kwtSMS - SMS Gateway** and click Install, then Edit
 
-## Quick Start
+## Setup
 
-1. **Gateway tab**: Enter your kwtSMS API credentials and click Login
-2. **Settings tab**: Extension is enabled by default with sensible defaults
-3. **Templates tab**: Customize SMS message templates (EN + AR)
-4. **Test**: Use the Test Gateway feature to verify everything works
+1. **Gateway** tab: enter the API username and password of your kwtSMS account (not your mobile number) and click
+   **Login**.
+2. **Settings** tab: the extension starts with sensible defaults; turn on test mode for a first try.
+3. **Templates** tab: adjust the English and Arabic messages.
+4. Use **Test Gateway** to send a test message through the full pipeline, then turn test mode off.
+
+Test mode messages are not delivered, but their credits are held until you delete them from the Sending Queue in your
+kwtSMS account.
 
 ## Placeholders
 
@@ -122,6 +125,20 @@ For more information, visit [kwtsms.com](https://www.kwtsms.com) or contact [sup
 | `{expiry_minutes}` | OTP | Code validity |
 | `{products_summary}` | Cart | Product names in cart |
 
+## Arabic
+
+Every template comes in English and Arabic and the admin screens are translated. Arabic SMS are sent as Unicode: one
+SMS page holds 70 Arabic characters, against 160 English ones.
+
+## FAQ
+
+**Which username do I use?** The API username and password of your kwtSMS account, not your mobile number.
+
+**Why do test messages not arrive?** Test mode queues messages without delivering them. Turn it off in Settings.
+
+**What is a Sender ID?** The name shown as the sender on the phone. See the
+[Sender ID help](https://www.kwtsms.com/sender-id-help.html).
+
 ## Technical Details
 
 - 20 PHP files + 3 Twig templates
@@ -131,13 +148,20 @@ For more information, visit [kwtsms.com](https://www.kwtsms.com) or contact [sup
 - 24 SMS templates (EN + AR)
 - 7 admin tabs
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
 ## Support
 
-- [kwtSMS Support Center](https://www.kwtsms.com/support.html)
-- [FAQ](https://www.kwtsms.com/faq/)
-- [Sender ID Help](https://www.kwtsms.com/sender-id-help.html)
-- [Developers](https://www.kwtsms.com/developers.html)
+Help: https://www.kwtsms.com/support.html | FAQ: https://www.kwtsms.com/faq/ |
+API: [developers](https://www.kwtsms.com/developers.html), [API reference](https://www.kwtsms.com/api-documentation.html) |
+[Issues](https://github.com/kwtsms/kwtsms-opencart/issues)
+
+## Security
+
+See [SECURITY.md](SECURITY.md).
 
 ## License
 
-GPL-3.0-or-later
+GPL-3.0-or-later, (c) kwtSMS (BoxLink Center). See https://www.gnu.org/licenses/gpl-3.0.html.
