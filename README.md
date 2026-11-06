@@ -70,7 +70,7 @@ free API testing and credits that do not expire.
 
 ## Requirements
 
-- OpenCart 4.0.2.x or later, PHP 8.0 or later with curl and json.
+- OpenCart 4.0.2.x or later (tested on 4.1.0.4), PHP 8.0 or later with curl and json.
 - A kwtSMS account (free test account, no papers): https://www.kwtsms.com/cportal/signup/
 
 ## Installation
@@ -79,18 +79,26 @@ free API testing and credits that do not expire.
 
 1. Go to [OpenCart Marketplace](https://www.opencart.com/index.php?route=marketplace/extension&filter_search=kwtsms) and search for "kwtSMS"
 2. Download the extension
-3. In your OpenCart Admin, go to **Extensions > Installer** and upload the .ocmod.zip file
+3. In your OpenCart Admin, go to **Extensions > Installer** and upload the `kwtsms.ocmod.zip` file. Keep that file
+   name: OpenCart uses it as the extension code.
 4. Go to **Extensions > Extensions**, select **Modules** from the dropdown
 5. Find **kwtSMS - SMS Gateway** and click the green **+** (Install) button
 6. Click the blue **pencil** (Edit) button to configure
 
 ### From GitHub
 
-1. Download the latest release from [GitHub Releases](https://github.com/kwtsms/kwtsms-opencart/releases)
-2. Extract the zip, the `extension/kwtsms/` directory contains the extension files
-3. Copy the `kwtsms/` folder to your OpenCart installation's `extension/` directory
-4. In your OpenCart Admin, go to **Extensions > Extensions**, select **Modules**
-5. Find **kwtSMS - SMS Gateway** and click Install, then Edit
+1. Download `kwtsms.ocmod.zip` from the [latest release](https://github.com/kwtsms/kwtsms-opencart/releases/latest).
+2. Install it the same way: **Extensions > Installer**, upload, then install the module under **Extensions >
+   Extensions > Modules**.
+
+### Upgrade (keeps your settings)
+
+1. Unzip the new `kwtsms.ocmod.zip`.
+2. Copy its contents over the `extension/kwtsms/` folder of your OpenCart (FTP or your host's file manager),
+   replacing the files.
+
+Your settings, templates and logs stay. Do not upgrade through **Extensions > Installer**: OpenCart asks you to
+uninstall the module first, and uninstalling deletes its settings.
 
 ## Setup
 

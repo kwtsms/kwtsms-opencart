@@ -10,6 +10,8 @@
 ### Changed
 - Bundled kwtsms-php library updated to 1.8.1.
 - The repository now includes the GPL-3.0 LICENSE file.
+- The release file is named `kwtsms.ocmod.zip`: OpenCart takes the extension code from the file name, and the code must be `kwtsms`. The README explains how to upgrade without losing settings.
+- Tested on OpenCart 4.1.0.4.
 - Admin phone placeholders and help text (English and Arabic) and the bundled kwtsms-php library's docs, examples and ERR006/ERR025 action text use the placeholder `965XXXXXXXX` instead of a sample mobile number; the bundled library's tests read the phone number from `KWTSMS_TEST_NUMBER` and skip the tests that need it when it is unset.
 
 ## [1.1.0] - 2026-04-09
