@@ -2,10 +2,14 @@
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-07
+
 ### Added
 - Requests to kwtSMS carry the integration name and version (no personal data) so kwtSMS can see which integrations are in use.
 
 ### Changed
+- Bundled kwtsms-php library updated to 1.8.1.
+- The repository now includes the GPL-3.0 LICENSE file.
 - Admin phone placeholders and help text (English and Arabic) and the bundled kwtsms-php library's docs, examples and ERR006/ERR025 action text use the placeholder `965XXXXXXXX` instead of a sample mobile number; the bundled library's tests read the phone number from `KWTSMS_TEST_NUMBER` and skip the tests that need it when it is unset.
 
 ## [1.1.0] - 2026-04-09
