@@ -26,20 +26,35 @@ class KwtSMS
     private const API_BASE = 'https://www.kwtsms.com/API';
 
     /**
+     * Library version, sent in the User-Agent. The release workflow fails when it differs from the tag.
+     * 2026-11-05 14:10 +03: added so kwtSMS can count accounts per integration (int-measure-signups, #939).
+     * @var string
+     */
+    public const VERSION = '1.8.1';
+
+    /** @var string User-Agent sent on every API call (2026-11-05 14:10 +03, #939) */
+    private $user_agent;
+
+    /**
      * @param string $username
      * @param string $password
      * @param string $sender_id
      * @param bool $test_mode
      * @param string $log_file  Path for NDJSON log. Empty string disables logging.
      *                          Must not contain '..' (path traversal guard).
+     * @param string $app_name  Optional product token of the calling app or plugin, e.g. 'kwtsms-wordpress/3.5.2',
+     *                          sent before the library token in the User-Agent.
      */
     public function __construct(
         string $username,
         string $password,
         string $sender_id = 'KWT-SMS',
         bool $test_mode = false,
-        string $log_file = 'kwtsms.log'
+        string $log_file = 'kwtsms.log',
+        string $app_name = ''
     ) {
+        // 2026-11-05 14:10 +03: identify the caller to the API (name and version only, no personal data), #939.
+        $this->user_agent = self::buildUserAgent($app_name);
         // Strip embedded newlines from credentials to prevent env-injection if
         // these values are ever written back to a .env file or a log entry.
         $this->username = str_replace(["\r", "\n"], '', $username);
@@ -101,7 +116,7 @@ class KwtSMS
                             }
                         }
 
-                        // Strip embedded newlines — prevents env-injection if this
+                        // Strip embedded newlines - prevents env-injection if this
                         // value is later written to a .env file or passed to putenv().
                         $val = str_replace(["\r", "\n"], '', $val);
 
@@ -130,6 +145,32 @@ class KwtSMS
         $log_file = ($raw_log === '') ? '' : (string) $raw_log;
 
         return new self((string) $username, (string) $password, (string) $sender, $test_mode, (string) $log_file);
+    }
+
+    /**
+     * The User-Agent this client sends: "[app token ]kwtsms-php/<VERSION>".
+     * 2026-11-05 14:10 +03: added for per-integration counts (#939).
+     */
+    public function getUserAgent(): string
+    {
+        return $this->user_agent;
+    }
+
+    /**
+     * Build the User-Agent from an optional app token. The token is caller input, so control characters
+     * (CR/LF would split the header) are removed, whitespace becomes '-', and it is cut to 64 characters.
+     * 2026-11-05 14:10 +03: added for per-integration counts (#939).
+     */
+    public static function buildUserAgent(string $app_name = ''): string
+    {
+        // 2026-11-05 14:23 +03: whitespace to '-' first, then keep printable ASCII only (a header must be
+        // ASCII; same rule as the other kwtSMS libraries), #939.
+        $app = (string) preg_replace('/\s+/', '-', trim($app_name));
+        $app = trim((string) preg_replace('/[^\x21-\x7E]+/', '', $app), '-');
+        $app = substr($app, 0, 64);
+        $lib = 'kwtsms-php/' . self::VERSION;
+
+        return $app === '' ? $lib : $app . ' ' . $lib;
     }
 
     /**
@@ -164,6 +205,8 @@ class KwtSMS
             'Content-Type: application/json',
             'Accept: application/json',
         ]);
+        // 2026-11-05 14:10 +03: 'kwtsms-php/<version>', prefixed by the app token when given (#939).
+        curl_setopt($ch, CURLOPT_USERAGENT, $this->user_agent);
 
         // Critical: Do NOT use CURLOPT_FAILONERROR because we *need* the 4xx/5xx body for API errors!
 
@@ -232,10 +275,12 @@ class KwtSMS
             'error' => $error,
         ];
 
-        $jsonLine = json_encode($entry) . "\n";
-        if ($jsonLine !== false) {
+        // 2026-11-05 13:12 +03: check json_encode() before appending the newline; the old check on the
+        // concatenated string was always true, so a failed encode wrote a blank line (PHPStan 2, PR #15).
+        $json = json_encode($entry);
+        if ($json !== false) {
             // Error suppression is intentional; PRD explicitly states "Logging MUST never crash the main flow"
-            @file_put_contents($this->log_file, $jsonLine, FILE_APPEND | LOCK_EX);
+            @file_put_contents($this->log_file, $json . "\n", FILE_APPEND | LOCK_EX);
         }
     }
 
@@ -596,7 +641,7 @@ class KwtSMS
      *
      * Returns 'status' and 'description' on OK.
      * ERR029: message ID not found.
-     * ERR030: message stuck in queue — delete at kwtsms.com → Queue to recover credits.
+     * ERR030: message stuck in queue - delete at kwtsms.com → Queue to recover credits.
      *
      * @param string $msgId  The msg-id returned by send().
      * @return array<string, mixed>
@@ -612,7 +657,7 @@ class KwtSMS
      * Only available for international (non-Kuwait) numbers.
      * Wait at least 5 minutes after send before calling.
      * Returns 'report' array of {Number, Status} entries on OK.
-     * ERR019–ERR023 cover the various DLR failure cases.
+     * ERR019-ERR023 cover the various DLR failure cases.
      *
      * @param string $msgId  The msg-id returned by send().
      * @return array<string, mixed>

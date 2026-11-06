@@ -11,6 +11,33 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.8.1] 2026-11-06
+
+### Changed
+
+- The Packagist download now contains only the library (src/, README, CHANGELOG, LICENSE, composer.json): tests, examples, CI and editor files are left out, so plugins that bundle it stay small.
+- Plain ASCII hyphens instead of en and em dashes in comments and docs.
+
+---
+
+## [1.8.0] 2026-11-05
+
+### Added
+- The client sends a User-Agent `kwtsms-php/<version>` (name and version only, no personal data) so kwtSMS can see which integrations are in use. An optional `$app_name` constructor argument puts your app's token in front, e.g. `kwtsms-wordpress/3.5.2 kwtsms-php/1.8.0`. New `KwtSMS::VERSION` constant.
+
+### Changed
+- Package author and license holder are now kwtSMS.
+- ERR006 and ERR025 action text, the README, examples and docs use the placeholder `965XXXXXXXX` instead of a sample mobile number; tests read the phone number from `KWTSMS_TEST_NUMBER` and skip the tests that need it when it is unset.
+
+### Fixed
+- A failed JSON encode of a log entry no longer writes a blank line to the log file.
+
+### Docs
+- Test mode: test messages are queued but not delivered. Their credits are held until you delete them from the Sending Queue in your kwtsms.com account (previously documented as "no credits consumed").
+- ERR028 description and action no longer state a fixed 15-second wait. Duplicate SMS protection is opt-in per account and its window is set per account (10 seconds by default). The error-handling example now waits 10 seconds instead of 15.
+
+---
+
 ## [1.7.0] 2026-03-18
 
 ### Changed
@@ -104,9 +131,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 - `MessageUtils::clean_message()`: extended emoji stripping to cover country flags
-  (Regional Indicator Symbols U+1F1E0–U+1F1FF), mahjong tiles (U+1F000–U+1F02F),
+  (Regional Indicator Symbols U+1F1E0-U+1F1FF), mahjong tiles (U+1F000-U+1F02F),
   domino tiles, playing cards, keycap combiner (U+20E3, used in 1️⃣ 2️⃣ etc.),
-  and the tags block (U+E0000–U+E007F, used in subdivision flags such as 🏴󠁧󠁢󠁳󠁣󠁴󠁿).
+  and the tags block (U+E0000-U+E007F, used in subdivision flags such as 🏴󠁧󠁢󠁳󠁣󠁴󠁿).
 - `KwtSMS::send()`: ERR009 is now returned locally before any API call when the
   message is empty or becomes empty after cleaning (emoji-only or HTML-only input).
   The error description distinguishes the two cases with an actionable message.
@@ -183,7 +210,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/boxlinknet/kwtsms-php/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/kwtsms/kwtsms-php/compare/v1.7.0...HEAD
 [1.7.0]: https://github.com/boxlinknet/kwtsms-php/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/boxlinknet/kwtsms-php/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/boxlinknet/kwtsms-php/compare/v1.4.0...v1.5.0

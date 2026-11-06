@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/kwtsms/kwtsms.svg?style=flat-square)](https://packagist.org/packages/kwtsms/kwtsms)
 [![PHP Version](https://img.shields.io/packagist/php-v/kwtsms/kwtsms.svg?style=flat-square)](https://packagist.org/packages/kwtsms/kwtsms)
 [![License](https://img.shields.io/packagist/l/kwtsms/kwtsms.svg?style=flat-square)](LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/boxlinknet/kwtsms-php/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/boxlinknet/kwtsms-php/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/kwtsms/kwtsms-php/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/kwtsms/kwtsms-php/actions/workflows/ci.yml)
 
 kwtSMS API Client for PHP. Official library to interface with the Kuwait SMS gateway (kwtsms.com).
 
@@ -285,7 +285,7 @@ if ($result['result'] === 'OK') {
     echo $result['description']; // e.g. "Message successfully sent to gateway"
 } else {
     // ERR029: msg-id not found
-    // ERR030: stuck in queue — delete at kwtsms.com → Queue to recover credits
+    // ERR030: stuck in queue - delete at kwtsms.com → Queue to recover credits
     echo $result['action'];
 }
 ```
@@ -333,7 +333,7 @@ Validation steps (in order):
 3. Arabic/Hindi digit conversion + non-digit stripping
 4. Leading zero stripping
 5. Local trunk digit `0` stripped when country code is matched (e.g. `966 055...` → `966 55...`)
-6. Length check: 7–15 digits
+6. Length check: 7-15 digits
 7. Country-specific format check: local digit count and mobile starting digit (60+ countries via `PHONE_RULES`). Unknown country codes pass with length-only validation.
 
 ### `PhoneUtils::find_country_code()` / `PhoneUtils::validate_phone_format()`
@@ -372,7 +372,7 @@ What it strips and why:
 | 1 | HTML tags | Prevents ERR027 |
 | 2 | Arabic/Hindi digits converted to Latin | OTP codes render consistently on all handsets |
 | 3 | Hidden Unicode (U+200B zero-width space, U+FEFF BOM, U+00AD soft hyphen, etc.) | Common in copy-pasted text from Word/PDFs; causes spam filter rejection |
-| 4 | Emojis: standard, country flags (U+1F1E0–U+1F1FF), mahjong tiles (U+1F000), keycap combiner (U+20E3), tags block (U+E0000–E007F) | Messages with emojis queue indefinitely with no error returned |
+| 4 | Emojis: standard, country flags (U+1F1E0-U+1F1FF), mahjong tiles (U+1F000), keycap combiner (U+20E3), tags block (U+E0000-E007F) | Messages with emojis queue indefinitely with no error returned |
 | 5 | Other control characters | Prevents encoding issues |
 
 Newlines (`\n`, `\r`), tabs (`\t`), Arabic text, and Latin punctuation are preserved.
@@ -427,7 +427,7 @@ Never expose raw `ERR0XX` codes to end users.
 
 ## CLI
 
-The CLI tool has moved to a dedicated package: **[kwtsms-cli](https://github.com/boxlinknet/kwtsms-cli)**
+The CLI tool has moved to a dedicated package: **[kwtsms-cli](https://github.com/kwtsms/kwtsms-cli)**
 
 ---
 
@@ -442,6 +442,16 @@ newline-delimited JSON (NDJSON) entry:
 
 The password is always masked as `***`. Logging never throws; failures are silently
 ignored so they cannot crash the main application flow.
+
+### User-Agent
+
+Every API request carries the User-Agent `kwtsms-php/<version>`: the library name and version only, no
+personal or customer data. Pass your own product token as the sixth constructor argument to put it in front:
+
+```php
+$sms = new KwtSMS($user, $pass, 'MY-SENDER', false, 'kwtsms.log', 'my-shop/2.1.0');
+// User-Agent: my-shop/2.1.0 kwtsms-php/1.8.0
+```
 
 ---
 
@@ -465,8 +475,8 @@ BEFORE GOING LIVE:
 [ ] Transactional Sender ID for OTP (not promotional)
 [ ] Test mode OFF (KWTSMS_TEST_MODE=0)
 [ ] CAPTCHA on all SMS-triggering forms
-[ ] Rate limit per phone number (max 3–5 per hour)
-[ ] Rate limit per IP address (max 10–20 per hour)
+[ ] Rate limit per phone number (max 3-5 per hour)
+[ ] Rate limit per IP address (max 10-20 per hour)
 [ ] OTP codes stored as HMAC hash, not plaintext
 [ ] Admin alert on low balance
 [ ] .env in .gitignore; credentials never committed
@@ -485,8 +495,9 @@ stuck messages from the queue to recover credits.
 
 **What is the difference between Test mode and Live mode?**
 
-Test mode (`KWTSMS_TEST_MODE=1`) queues the message but never delivers it. No
-SMS is sent, no credits consumed. Use this during development. Set to `0` before
+Test mode (`KWTSMS_TEST_MODE=1`) queues the message but never delivers it. Its
+credits are held until you delete it from the Sending Queue in your kwtsms.com
+account. Use this during development. Set to `0` before
 going live.
 
 **Why should I not use `KWT-SMS` as my Sender ID in production?**
