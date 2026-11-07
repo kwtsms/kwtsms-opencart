@@ -59,17 +59,24 @@ if '"error"' in r:
 ids = []
 for route in ('marketplace/installer.list', 'marketplace/installer.extension', 'marketplace/installer'):
     listing = get(admin + '?route=' + route + '&user_token=' + T)
-    ids = re.findall(r'extension_install_id=(\d+)', listing.replace('&amp;', '&'))
+    rows = re.findall(r'<tr.*?</tr>', listing.replace('&amp;', '&'), re.S)
+    ids = [i for row in rows if 'kwtsms' in row.lower() for i in re.findall(r'installer\.install&user_token=[0-9a-f]+&extension_install_id=(\d+)', row)]
     print('listing', route, 'chars', len(listing), 'ids', ids, '| kwtsms mentioned:', 'kwtsms' in listing)
     if ids:
         break
 print('installable ids:', ids)
 if not ids:
     fail('uploaded extension not listed')
-r = get(admin + '?route=marketplace/installer.install&user_token=' + T + '&extension_install_id=' + ids[-1])
-print('install:', r[:300])
-if '"error"' in r:
-    fail('install error')
+url = admin + '?route=marketplace/installer.install&user_token=' + T + '&extension_install_id=' + ids[0]
+for step in range(20):
+    r = get(url)
+    print('install step', step, ':', r[:200])
+    if '"error"' in r:
+        fail('install error')
+    nxt = json.loads(r).get('next')
+    if not nxt:
+        break
+    url = nxt.replace('\\/', '/')
 
 r = get(admin + '?route=extension/module.install&user_token=' + T + '&extension=kwtsms&code=kwtsms')
 print('module install:', r[:300])
