@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Settings, templates, the gateway login, campaigns and the SMS log are kept when the module is uninstalled, so an upgrade loses nothing.
+
 ## [1.1.1] - 2026-11-07
 
 ### Added

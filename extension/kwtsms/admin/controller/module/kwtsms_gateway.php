@@ -41,6 +41,8 @@ class KwtsmsGateway extends \Opencart\System\Engine\Controller {
             $existing['module_kwtsms_username'] = $username;
             $existing['module_kwtsms_password'] = $password;
             $this->model_setting_setting->editSetting('module_kwtsms', $existing);
+            $this->load->model('extension/kwtsms/module/kwtsms');
+            $this->model_extension_kwtsms_module_kwtsms->backupSettings($existing);
 
             $json['success']   = $this->language->get('text_login_success');
             $json['balance']   = $result['balance'];
@@ -81,6 +83,8 @@ class KwtsmsGateway extends \Opencart\System\Engine\Controller {
         $existing['module_kwtsms_username'] = '';
         $existing['module_kwtsms_password'] = '';
         $this->model_setting_setting->editSetting('module_kwtsms', $existing);
+        $this->load->model('extension/kwtsms/module/kwtsms');
+        $this->model_extension_kwtsms_module_kwtsms->backupSettings($existing);
 
         $json['success'] = $this->language->get('text_logout_success');
 
@@ -221,6 +225,8 @@ class KwtsmsGateway extends \Opencart\System\Engine\Controller {
         $existing['module_kwtsms_country_code'] = $countryCode;
         $existing['module_kwtsms_debug']        = $debug;
         $this->model_setting_setting->editSetting('module_kwtsms', $existing);
+        $this->load->model('extension/kwtsms/module/kwtsms');
+        $this->model_extension_kwtsms_module_kwtsms->backupSettings($existing);
 
         $json['success'] = $this->language->get('text_success');
 

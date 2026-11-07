@@ -53,6 +53,19 @@ jobs:
           docker exec db mariadb -uroot -pci opencart -N -e "SELECT code FROM oc_extension WHERE code='kwtsms'; SELECT name FROM oc_extension_install WHERE code='kwtsms'; SHOW TABLES LIKE 'oc_kwtsms%';" | tee db.txt
           grep -qx kwtsms db.txt
 
+      # 2026-11-08 00:34 +03: settings, templates and the gateway login survive uninstall + reinstall (Boss 2026-11-08 00:32).
+      - name: Settings survive uninstall and reinstall
+        run: |
+          q() { docker exec db mariadb -uroot -pci opencart -N -e "$1"; }
+          q "UPDATE oc_setting SET value='8' WHERE \`key\`='module_kwtsms_otp_length'"
+          before=$(q "SELECT COUNT(*) FROM oc_kwtsms_templates")
+          REINSTALL=1 python3 .github/ci/oc_install.py http://localhost:8080 ciadmin /tmp/admin.pass kwtsms.ocmod.zip
+          after=$(q "SELECT COUNT(*) FROM oc_kwtsms_templates")
+          otp=$(q "SELECT value FROM oc_setting WHERE \`key\`='module_kwtsms_otp_length'")
+          echo "templates before=$before after=$after otp_length=$otp"
+          [ "$otp" = "8" ] && [ "$before" = "$after" ] && [ "$after" -gt 0 ]
+          q "SHOW TABLES LIKE 'oc_kwtsms_gateway'" | grep -q gateway
+
       - name: Container log on failure
         if: failure()
         run: docker logs web 2>&1 | tail -40
