@@ -31,6 +31,9 @@ class Kwtsms extends \Opencart\System\Engine\Controller {
         // Load models
         $this->load->model('extension/kwtsms/module/kwtsms');
         $this->load->model('extension/kwtsms/module/kwtsms_gateway');
+        // 2026-11-08 00:37 +03: refresh the kept settings copy on every settings-page load (task opencart-keep-settings).
+        $this->load->model('setting/setting');
+        $this->model_extension_kwtsms_module_kwtsms->backupSettings($this->model_setting_setting->getSetting('module_kwtsms'));
         $this->load->model('localisation/order_status');
 
         // Action URLs
@@ -345,7 +348,8 @@ class Kwtsms extends \Opencart\System\Engine\Controller {
         // uninstall/upgrade): defaults only fill keys that are missing. Task opencart-keep-settings.
         $this->load->model('setting/setting');
         $existing = $this->model_setting_setting->getSetting('module_kwtsms');
-        $this->model_setting_setting->editSetting('module_kwtsms', array_merge($defaults, $existing));
+        $backup   = $this->model_extension_kwtsms_module_kwtsms->getSettingsBackup();
+        $this->model_setting_setting->editSetting('module_kwtsms', array_merge($defaults, $backup, $existing));
     }
 
     /**
@@ -493,6 +497,8 @@ class Kwtsms extends \Opencart\System\Engine\Controller {
             }
 
             $this->model_setting_setting->editSetting('module_kwtsms', $settings);
+            $this->load->model('extension/kwtsms/module/kwtsms');
+            $this->model_extension_kwtsms_module_kwtsms->backupSettings($settings);
 
             // Save templates from POST
             if (isset($this->request->post['templates']) && is_array($this->request->post['templates'])) {

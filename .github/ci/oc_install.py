@@ -54,6 +54,8 @@ T = tok.group(1)
 # 2026-11-08 00:34 +03: REINSTALL=1 only uninstalls and reinstalls the module (settings must survive, task opencart-keep-settings).
 import os
 if os.environ.get('REINSTALL') == '1':
+    page = get(admin + '?route=extension/kwtsms/module/kwtsms&user_token=' + T)
+    print('settings page chars:', len(page))
     for act in ('uninstall', 'install'):
         r = get(admin + '?route=extension/module.' + act + '&user_token=' + T + '&extension=kwtsms&code=kwtsms')
         print('module ' + act + ':', r[:200])

@@ -105,6 +105,39 @@ class Kwtsms extends \Opencart\System\Engine\Model {
             UNIQUE INDEX `idx_customer_cart` (`customer_id`, `cart_hash`),
             INDEX `idx_status` (`status`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+
+        // 2026-11-08 00:36 +03: copy of the module settings, kept across uninstall (OpenCart core deletes module_kwtsms settings
+        // BEFORE it calls our uninstall, so they are copied here on every save). Task opencart-keep-settings.
+        $this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "kwtsms_settings_backup` (
+            `id` INT NOT NULL,
+            `data` MEDIUMTEXT NOT NULL,
+            `date_modified` DATETIME NOT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+    }
+
+    /**
+     * Keep a copy of the module settings (restored by install() after an uninstall). 2026-11-08 00:36 +03.
+     */
+    public function backupSettings(array $settings): void {
+        if (!$settings) {
+            return;
+        }
+        $this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "kwtsms_settings_backup` (`id` INT NOT NULL, `data` MEDIUMTEXT NOT NULL, `date_modified` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+        $this->db->query("REPLACE INTO `" . DB_PREFIX . "kwtsms_settings_backup` SET `id` = 1, `data` = '" . $this->db->escape(json_encode($settings)) . "', `date_modified` = NOW()");
+    }
+
+    /**
+     * The kept copy of the module settings, or an empty array. 2026-11-08 00:36 +03.
+     */
+    public function getSettingsBackup(): array {
+        $exists = $this->db->query("SHOW TABLES LIKE '" . $this->db->escape(DB_PREFIX . "kwtsms_settings_backup") . "'");
+        if (!$exists->num_rows) {
+            return [];
+        }
+        $row = $this->db->query("SELECT `data` FROM `" . DB_PREFIX . "kwtsms_settings_backup` WHERE `id` = 1");
+        $data = $row->num_rows ? json_decode($row->row['data'], true) : [];
+        return is_array($data) ? $data : [];
     }
 
     /**
