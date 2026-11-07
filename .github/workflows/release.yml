@@ -1,0 +1,43 @@
+# FILE:      .github/workflows/release.yml
+# CREATED:   2026-11-07 17:08 +03
+# TASK:      release-zips-ci (manager #1060 q1: a release must not need the maintainer laptop)
+# AUTHOR:    M Alhassoun
+# WHAT:      On a v* tag, builds kwtsms.ocmod.zip from extension/kwtsms (the file name OpenCart 4 requires; composer
+#            files and the bundled client's dev docs left out) and attaches it to the GitHub release of that tag,
+#            creating the release if it does not exist yet. Release notes are written by hand (high level).
+# WHY:       The zip used to be built on the laptop; this makes it reproducible from the tag. Verified: the same
+#            command on the v1.1.1 tree gives a zip identical to the published v1.1.1 asset.
+# USAGE:     git push origin vX.Y.Z (after the approval card). Pull requests only build the zip (no upload).
+# DEPENDS:   GITHUB_TOKEN with contents: write.
+name: Release zip
+
+on:
+  push:
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build kwtsms.ocmod.zip
+        run: |
+          cd extension/kwtsms
+          zip -qr "$GITHUB_WORKSPACE/kwtsms.ocmod.zip" . -x composer.json composer.lock \
+            vendor/kwtsms/kwtsms-php/CHANGELOG.md vendor/kwtsms/kwtsms-php/CONTRIBUTING.md vendor/kwtsms/kwtsms-php/SECURITY.md
+          cd "$GITHUB_WORKSPACE" && unzip -l kwtsms.ocmod.zip | tail -1
+          unzip -Z1 kwtsms.ocmod.zip | grep -E '^install\.json$'
+
+      - name: Attach to the GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release upload "$TAG" kwtsms.ocmod.zip --clobber || gh release create "$TAG" --title "$TAG" --notes "Release $TAG" kwtsms.ocmod.zip
