@@ -51,6 +51,16 @@ if not tok:
     fail('no user_token after login')
 T = tok.group(1)
 
+# 2026-11-08 00:34 +03: REINSTALL=1 only uninstalls and reinstalls the module (settings must survive, task opencart-keep-settings).
+import os
+if os.environ.get('REINSTALL') == '1':
+    for act in ('uninstall', 'install'):
+        r = get(admin + '?route=extension/module.' + act + '&user_token=' + T + '&extension=kwtsms&code=kwtsms')
+        print('module ' + act + ':', r[:200])
+        if '"error"' in r:
+            fail('module ' + act + ' error')
+    print('OK'); sys.exit(0)
+
 r = post(admin + '?route=marketplace/installer.upload&user_token=' + T, files={'file': ('kwtsms.ocmod.zip', open(zip_path, 'rb').read())})
 print('upload:', r[:300])
 if '"error"' in r:

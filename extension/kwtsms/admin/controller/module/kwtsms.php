@@ -341,21 +341,24 @@ class Kwtsms extends \Opencart\System\Engine\Controller {
             'module_kwtsms_abandoned_cart_max_per_run'      => 50,
         ];
 
+        // 2026-11-08 00:34 +03: keep the merchant's saved settings on reinstall (Boss 2026-11-08 00:32: settings survive an
+        // uninstall/upgrade): defaults only fill keys that are missing. Task opencart-keep-settings.
         $this->load->model('setting/setting');
-        $this->model_setting_setting->editSetting('module_kwtsms', $defaults);
+        $existing = $this->model_setting_setting->getSetting('module_kwtsms');
+        $this->model_setting_setting->editSetting('module_kwtsms', array_merge($defaults, $existing));
     }
 
     /**
      * Called by OpenCart when the extension is uninstalled.
-     * Drops DB tables, removes events and settings.
+     * Removes events, cron tasks and temporary tables; keeps settings, gateway login, templates, campaigns and the
+     * SMS log so a reinstall (the OpenCart upgrade path) loses nothing.
      */
     public function uninstall(): void {
         // 1. Drop database tables
         $this->load->model('extension/kwtsms/module/kwtsms');
         $this->model_extension_kwtsms_module_kwtsms->uninstall();
 
-        // 1b. Drop campaigns table
-        $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "kwtsms_campaigns`");
+        // 1b. ({now}) The campaigns table is kept: campaigns are the merchant's own content.
 
         // 2. Delete events
         $this->load->model('setting/event');
@@ -374,9 +377,7 @@ class Kwtsms extends \Opencart\System\Engine\Controller {
         $this->model_setting_cron->deleteCronByCode('kwtsms_sync');
         $this->model_setting_cron->deleteCronByCode('kwtsms_abandoned_cart');
 
-        // 4. Delete settings
-        $this->load->model('setting/setting');
-        $this->model_setting_setting->deleteSetting('module_kwtsms');
+        // 4. ({now}) Settings are kept on purpose (Boss 2026-11-08 00:32), see install().
     }
 
     /**

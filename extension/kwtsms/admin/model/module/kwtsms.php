@@ -108,14 +108,12 @@ class Kwtsms extends \Opencart\System\Engine\Model {
     }
 
     /**
-     * Drop all kwtSMS database tables.
+     * Drop the temporary kwtSMS tables. 2026-11-08 00:34 +03: the SMS log, gateway login and templates are kept so an uninstall
+     * (OpenCart's upgrade path) loses nothing (Boss 2026-11-08 00:32, task opencart-keep-settings).
      */
     public function uninstall(): void {
-        $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "kwtsms_sms_log`");
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "kwtsms_debug_log`");
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "kwtsms_otp_attempts`");
-        $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "kwtsms_gateway`");
-        $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "kwtsms_templates`");
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "kwtsms_low_stock_alerts`");
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "kwtsms_abandoned_carts`");
     }
