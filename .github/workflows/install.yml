@@ -1,0 +1,58 @@
+# FILE:      .github/workflows/install.yml
+# CREATED:   2026-11-07 23:06 +03
+# TASK:      opencart CI install test (int-ci-matrix)
+# AUTHOR:    M Alhassoun
+# WHAT:      Builds kwtsms.ocmod.zip like the release workflow, installs OpenCart 4.1.0.4 (PHP 8.2, MariaDB 10.11) from
+#            .github/ci/Dockerfile with OpenCart's CLI installer, then installs the extension through the admin over HTTP
+#            (.github/ci/oc_install.py: login, Installer upload, install, Modules install) and checks the database.
+# WHY:       OpenCart was the last store plugin without an install test; the 1.1.0 zip name bug would have failed here.
+# USAGE:     Runs on pull requests to main and by hand.
+# DEPENDS:   Docker on the runner; Python 3 standard library.
+name: OpenCart install
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build kwtsms.ocmod.zip
+        run: |
+          cd extension/kwtsms
+          zip -qr "$GITHUB_WORKSPACE/kwtsms.ocmod.zip" . -x composer.json composer.lock \
+            vendor/kwtsms/kwtsms-php/CHANGELOG.md vendor/kwtsms/kwtsms-php/CONTRIBUTING.md vendor/kwtsms/kwtsms-php/SECURITY.md
+
+      - name: Start MariaDB and OpenCart 4.1.0.4
+        run: |
+          docker network create ocnet
+          docker run -d --name db --network ocnet -e MARIADB_ROOT_PASSWORD=ci -e MARIADB_DATABASE=opencart mariadb:10.11
+          docker build -q -t oc-ci .github/ci
+          docker run -d --name web --network ocnet -p 8080:80 oc-ci
+          for i in $(seq 1 30); do docker exec db mariadb -uroot -pci -e "select 1" >/dev/null 2>&1 && break; sleep 3; done
+          openssl rand -hex 10 > /tmp/admin.pass
+          docker exec web php /var/www/html/install/cli_install.php install --username ciadmin --password "$(cat /tmp/admin.pass)" \
+            --email ci.admin@example.com --http_server http://localhost:8080/ --db_driver mysqli --db_hostname db \
+            --db_username root --db_password ci --db_database opencart --db_port 3306 --db_prefix oc_
+          docker exec web rm -rf /var/www/html/install
+          curl -s -o /dev/null -w 'admin http %{http_code}\n' http://localhost:8080/admin/
+
+      - name: Install the extension through the admin
+        run: python3 .github/ci/oc_install.py http://localhost:8080 ciadmin /tmp/admin.pass kwtsms.ocmod.zip
+
+      - name: Database check
+        run: |
+          docker exec db mariadb -uroot -pci opencart -N -e "SELECT code FROM oc_extension WHERE code='kwtsms'; SELECT name FROM oc_extension_install WHERE code='kwtsms'; SHOW TABLES LIKE 'oc_kwtsms%';" | tee db.txt
+          grep -qx kwtsms db.txt
+
+      - name: Container log on failure
+        if: failure()
+        run: docker logs web 2>&1 | tail -40
