@@ -56,8 +56,13 @@ print('upload:', r[:300])
 if '"error"' in r:
     fail('upload error')
 
-listing = get(admin + '?route=marketplace/installer.extension&user_token=' + T)
-ids = re.findall(r'installer\.install&(?:amp;)?user_token=[0-9a-f]+&(?:amp;)?extension_install_id=(\d+)', listing)
+ids = []
+for route in ('marketplace/installer.list', 'marketplace/installer.extension', 'marketplace/installer'):
+    listing = get(admin + '?route=' + route + '&user_token=' + T)
+    ids = re.findall(r'extension_install_id=(\d+)', listing.replace('&amp;', '&'))
+    print('listing', route, 'chars', len(listing), 'ids', ids, '| kwtsms mentioned:', 'kwtsms' in listing)
+    if ids:
+        break
 print('installable ids:', ids)
 if not ids:
     fail('uploaded extension not listed')
