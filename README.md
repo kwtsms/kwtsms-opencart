@@ -13,7 +13,7 @@
 Send order updates, checkout OTP codes, abandoned cart reminders and SMS campaigns from your OpenCart store, through
 kwtSMS, the Kuwaiti SMS gateway. Free.
 
-kwtSMS delivers to Zain, Ooredoo, stc and Virgin in Kuwait and to more than 200 countries, with your own Sender ID,
+kwtSMS delivers to Zain, Ooredoo, STC and Virgin in Kuwait and to more than 200 countries, with your own Sender ID,
 free API testing and credits that do not expire.
 
 ## Features
