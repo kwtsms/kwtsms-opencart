@@ -3,84 +3,43 @@
 ## [Unreleased]
 
 ### Changed
-- Settings, templates, the gateway login, campaigns and the SMS log are kept when the module is uninstalled, so an upgrade loses nothing.
+- Settings, templates, gateway login, campaigns and SMS log are kept when the module is uninstalled.
 
 ## [1.1.1] - 2026-11-07
 
 ### Added
-- Requests to kwtSMS carry the integration name and version (no personal data) so kwtSMS can see which integrations are in use.
+- Integration name and version sent with requests.
 
 ### Changed
-- Bundled kwtsms-php library updated to 1.8.1.
-- The repository now includes the GPL-3.0 LICENSE file.
-- The release file is named `kwtsms.ocmod.zip`: OpenCart takes the extension code from the file name, and the code must be `kwtsms`. The README explains how to upgrade without losing settings.
+- Bundled kwtsms-php library updated.
+- GPL-3.0 LICENSE file added.
+- Release file renamed `kwtsms.ocmod.zip`; the README explains how to upgrade without losing settings.
 - Tested on OpenCart 4.1.0.4.
-- Admin phone placeholders and help text (English and Arabic) and the bundled kwtsms-php library's docs, examples and ERR006/ERR025 action text use the placeholder `965XXXXXXXX` instead of a sample mobile number; the bundled library's tests read the phone number from `KWTSMS_TEST_NUMBER` and skip the tests that need it when it is unset.
 
 ## [1.1.0] - 2026-04-09
 
 ### Added
-- Per-status custom SMS templates with fallback to default
-- Dedicated templates database table (replaces oc_setting storage)
-- Reset-to-default button per template
-- Customer welcome SMS on new registration
-- Admin new customer registration alert
-- Admin low stock alert (global threshold, once-per-product, restock reset)
-- Admin new product review alert
-- Admin return request alert
-- COD OTP verification at checkout (phone verification for Cash on Delivery)
-- OTP rate limiting per phone and per IP
-- OTP configurable: code length, expiry, max attempts, resend cooldown
-- OTP on customer login (2FA via SMS after password check)
-- OTP on customer registration (verify phone before account creation)
-- Abandoned cart SMS recovery (cron-based detection with configurable delay)
-- Bulk SMS campaigns tab (send to all customers, customer group, or custom numbers)
-- Campaign preview with recipient count and credit estimate
-- Campaign history log with pagination
-- Settings: event toggles for customer and admin notifications
-- Settings: low stock threshold, abandoned cart delay, OTP configuration
-- Country code dropdown populated from coverage API
-- Sensible defaults on fresh install (extension on, statuses pre-selected)
+- Per-status SMS templates with reset to default.
+- Customer welcome SMS and admin alerts for new customers, low stock, product reviews and returns.
+- COD OTP verification, OTP on login and registration.
+- Abandoned cart SMS recovery.
+- Bulk SMS campaigns with preview and history.
+- More settings and a country code dropdown.
 
 ### Changed
-- Test gateway now uses main send() flow (supports multiple numbers, full pipeline)
-- Test gateway message auto-fills with timestamp
-- Dashboard status indicators enlarged for better visibility
-- Admin paid/problem status toggles show only relevant statuses
-- Sender ID dropdown only shows API data when gateway is connected
-- Tab order: Dashboard, Campaigns, Settings, Gateway, Templates, Logs, Help
-- Renamed "Enabled" dashboard indicator to "SMS Module" showing Enabled/Disabled
-
-### Fixed
-- Twig URL escaping in JavaScript context (decodeUrl helper)
-- OpenCart autoloader namespace convention (Kwtsms not KwtSMS)
-- Local phone numbers misidentified as foreign country codes
-- Cron addCron() signature (5 parameters in OpenCart 4.0.2.x)
-- Sender ID dropdown not populating from gateway data on page load
-- FAQ link updated to /faq/
-- Removed API documentation PDF link
+- Test gateway and dashboard improved.
+- Tab order and sender ID dropdown refined.
+- Bug fixes.
 
 ## [1.0.0] - 2026-04-05
 
 ### Added
-- Initial release
-- SMS notifications on order status changes (customer + admin)
-- Gateway login/logout/reload with kwtSMS API
-- Test gateway feature (send test SMS with test=1)
-- Message templates with English and Arabic support
-- Auto-select template language based on order language (AR/EN fallback)
-- SMS log with full audit trail (recipient, status, msg-id, points, API response)
-- Debug log with toggle (normalize, verify, clean, send flow)
-- Dashboard with SMS analytics (today, 7 days, 30 days) and system status
-- Admin phone numbers (comma-separated, multiple recipients)
-- Order status toggles for customer notifications, paid orders, problem statuses
-- Phone normalization: Arabic digits, local numbers, default country code (965)
-- Coverage check: skip numbers for countries not in account coverage
-- Message cleaning: strip emoji, hidden chars, HTML tags
-- Deduplication for multi-number sends
-- Bulk SMS batching (200 per request, 0.2s delay)
-- ERR013 (queue full) retry with exponential backoff (30s, 60s, 120s)
-- Balance tracking from API response (balance-after on every send)
-- Daily cron sync for balance, sender IDs, and coverage
-- Help tab with setup guide and external links
-- OTP attempts table (schema only, for future phase)
+- Initial release.
+- SMS notifications on order status changes (customer and admin).
+- Gateway login and test gateway.
+- English and Arabic templates.
+- SMS and debug logs.
+- Dashboard with SMS analytics.
+- Order status toggles, phone normalization and coverage check.
+- Bulk SMS batching.
+- Daily sync.
